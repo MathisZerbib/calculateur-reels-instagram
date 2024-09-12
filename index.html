@@ -205,6 +205,7 @@
             value="30"
             required
           />
+
           <div id="durationValue" class="slider-value">30 secondes</div>
         </div>
 
@@ -264,9 +265,12 @@
     <script>
       const durationSlider = document.getElementById("duration");
       const durationValue = document.getElementById("durationValue");
-      const result = document.getElementById("result");
 
       durationSlider.addEventListener("input", function () {
+        // Ensure the duration value doesn't go below the minimum
+        if (this.value < 10) {
+          this.value = 10; // Reset it to the minimum allowed value
+        }
         durationValue.textContent = `${this.value} secondes`;
       });
 
