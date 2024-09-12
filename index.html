@@ -244,15 +244,31 @@
             </option>
           </select>
         </div>
+
+        <!-- Nouveau champ pour le nombre d'abonnés -->
+        <div class="form-group">
+          <label for="followers">Nombre d'abonnés :</label>
+          <select id="followers" required>
+            <option value="0-1000">0 - 1,000 abonnés</option>
+            <option value="1000-10000">1,001 - 10,000 abonnés</option>
+            <option value="10000-50000">10,001 - 50,000 abonnés</option>
+            <option value="50000-990000">50,001 - 99,000 abonnés</option>
+            <option value="100000">100,000+ abonnés</option>
+          </select>
+        </div>
+
+        <div id="result">Estimation du coût : 0€</div>
       </form>
-      <div id="result">Estimation du coût : 0€</div>
     </div>
 
     <script>
-      const form = document.getElementById("reelCalculator");
-      const result = document.getElementById("result");
       const durationSlider = document.getElementById("duration");
       const durationValue = document.getElementById("durationValue");
+      const result = document.getElementById("result");
+
+      durationSlider.addEventListener("input", function () {
+        durationValue.textContent = `${this.value} secondes`;
+      });
 
       function calculateCost() {
         const complexity = document.getElementById("complexity").value;
@@ -260,6 +276,7 @@
         const team = document.getElementById("team").value;
         const equipment = document.getElementById("equipment").value;
         const postProduction = document.getElementById("postProduction").value;
+        const followers = document.getElementById("followers").value;
 
         let basePrice = 0;
 
@@ -304,33 +321,30 @@
             break;
         }
 
+        // Ajuster le coût en fonction du nombre d'abonnés
+        switch (followers) {
+          case "1000-10000":
+            basePrice *= 1.1;
+            break;
+          case "10000-50000":
+            basePrice *= 1.25;
+            break;
+          case "50000-990000":
+            basePrice *= 1.5;
+            break;
+          case "100000":
+            basePrice *= 2;
+            break;
+        }
+
         result.innerHTML = `Estimation du coût : ${basePrice.toFixed(2)}€`;
         result.classList.add("pulse");
         setTimeout(() => result.classList.remove("pulse"), 500);
       }
 
-      durationSlider.oninput = function () {
-        durationValue.innerHTML = this.value + " secondes";
-        calculateCost();
-      };
-
-      form.querySelectorAll("select").forEach((select) => {
-        select.addEventListener("change", calculateCost);
-      });
-
-      // Initial calculation
-      calculateCost();
-
-      // Smooth scroll to result on mobile
-      function smoothScrollToResult() {
-        if (window.innerWidth <= 768) {
-          result.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      }
-
-      form.querySelectorAll("select, input").forEach((input) => {
-        input.addEventListener("change", smoothScrollToResult);
-      });
+      // Recalculer le coût à chaque modification des valeurs
+      const inputs = document.querySelectorAll("select, input[type='range']");
+      inputs.forEach((input) => input.addEventListener("input", calculateCost));
     </script>
   </body>
 </html>
