@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur Interactif de Coût pour Reels</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6C63FF;
+            --secondary-color: #4CAF50;
+            --background-color: #f0f2f5;
+            --text-color: #333;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 2.5em;
+        }
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        select, input[type="range"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+        select:focus, input[type="range"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            box-shadow: 0 0 0 8px rgba(108, 99, 255, 0.1);
+        }
+        #result {
+            margin-top: 30px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 2em;
+            color: var(--secondary-color);
+            transition: all 0.5s ease;
+            padding: 20px;
+            border-radius: 10px;
+            background: linear-gradient(145deg, #f0f0f0, #ffffff);
+            box-shadow: 5px 5px 15px #d1d1d1, -5px -5px 15px #ffffff;
+        }
+        .slider-value {
+            text-align: center;
+            font-weight: 500;
+            margin-top: 10px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+        .form-group::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .form-group:focus-within::after {
+            transform: scaleX(1);
+        }
+        select, input[type="range"] {
+            cursor: pointer;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .form-group, #result {
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+        #result { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculateur Interactif de Coût pour Reels</h1>
+        <form id="reelCalculator">
+            <div class="form-group">
+                <label for="complexity">Complexité du projet :</label>
+                <select id="complexity" required>
+                    <option value="simple">Simple - Concept basique</option>
+                    <option value="medium">Moyenne - Scénario élaboré</option>
+                    <option value="complex">Complexe - Production avancée</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="duration">Durée du Reel :</label>
+                <input type="range" id="duration" min="1" max="60" value="30" required>
+                <div id="durationValue" class="slider-value">30 secondes</div>
+            </div>
+
+            <div class="form-group">
+                <label for="team">Taille de l'équipe :</label>
+                <select id="team" required>
+                    <option value="solo">Solo - Un créateur</option>
+                    <option value="small">Petite équipe - 2 à 3 personnes</option>
+                    <option value="large">Grande équipe - 4 personnes ou plus</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="equipment">Équipement utilisé :</label>
+                <select id="equipment" required>
+                    <option value="basic">Basique - Smartphone ou caméra d'entrée de gamme</option>
+                    <option value="semi-pro">Semi-professionnel - DSLR ou caméra mirrorless</option>
+                    <option value="professional">Professionnel - Caméra cinéma ou équipement haut de gamme</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="postProduction">Niveau de post-production :</label>
+                <select id="postProduction" required>
+                    <option value="minimal">Minimal - Montage simple</option>
+                    <option value="standard">Standard - Effets basiques et correction colorimétrique</option>
+                    <option value="advanced">Avancé - VFX, animation et étalonnage professionnel</option>
+                </select>
+            </div>
+        </form>
+        <div id="result">Estimation du coût : 0€</div>
+    </div>
+
+    <script>
+        const form = document.getElementById('reelCalculator');
+        const result = document.getElementById('result');
+        const durationSlider = document.getElementById('duration');
+        const durationValue = document.getElementById('durationValue');
+
+        function calculateCost() {
+            const complexity = document.getElementById('complexity').value;
+            const duration = parseInt(document.getElementById('duration').value);
+            const team = document.getElementById('team').value;
+            const equipment = document.getElementById('equipment').value;
+            const postProduction = document.getElementById('postProduction').value;
+            
+            let basePrice = 0;
+            
+            switch(complexity) {
+                case 'simple': basePrice = 300; break;
+                case 'medium': basePrice = 600; break;
+                case 'complex': basePrice = 1200; break;
+            }
+            
+            basePrice += (duration - 30) * 10;
+            
+            switch(team) {
+                case 'small': basePrice *= 1.5; break;
+                case 'large': basePrice *= 2.2; break;
+            }
+            
+            switch(equipment) {
+                case 'semi-pro': basePrice *= 1.3; break;
+                case 'professional': basePrice *= 1.7; break;
+            }
+            
+            switch(postProduction) {
+                case 'standard': basePrice *= 1.4; break;
+                case 'advanced': basePrice *= 1.8; break;
+            }
+            
+            result.innerHTML = `Estimation du coût : ${basePrice.toFixed(2)}€`;
+            result.classList.add('pulse');
+            setTimeout(() => result.classList.remove('pulse'), 500);
+        }
+
+        durationSlider.oninput = function() {
+            durationValue.innerHTML = this.value + " secondes";
+            calculateCost();
+        }
+
+        form.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', calculateCost);
+        });
+
+        // Initial calculation
+        calculateCost();
+
+        // Smooth scroll to result on mobile
+        function smoothScrollToResult() {
+            if (window.innerWidth <= 768) {
+                result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        form.querySelectorAll('select, input').forEach(input => {
+            input.addEventListener('change', smoothScrollToResult);
+        });
+    </script>
+</body>
+</html>
